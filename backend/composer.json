@@ -1,0 +1,13 @@
+{
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.1",
+    "vlucas/phpdotenv": "^5.4",
+    "webonyx/graphql-php": "^15.0",
+    "nikic/fast-route": "^1.3"
+  }
+}

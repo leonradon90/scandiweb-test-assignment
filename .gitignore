@@ -1,0 +1,18 @@
+# Node.js dependencies
+frontend/node_modules/
+
+# Build outputs
+frontend/dist/
+
+# Environment variables
+backend/.env
+
+# PHP dependencies
+backend/vendor/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
