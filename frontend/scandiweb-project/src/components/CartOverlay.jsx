@@ -1,20 +1,20 @@
-// src/components/CartOverlay.jsx
+
 
 import React from 'react';
 
 export default class CartOverlay extends React.Component {
-  // Function to place the order
+  
   placeOrder = () => {
     const { cart, backendUrl, clearCart } = this.props;
 
-    // Construct the products array as expected by the backend
+   
     const products = cart.map((item) => ({
       id: item.product.id,
       quantity: item.quantity,
-      originalAttributes: JSON.stringify(item.attributes), // Stringify the attributes
+      originalAttributes: JSON.stringify(item.attributes), 
     }));
 
-    // Perform the GraphQL mutation
+   
     fetch(backendUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -48,7 +48,7 @@ export default class CartOverlay extends React.Component {
       });
   };
 
-  // Function to render product attributes in the cart
+
   renderAttributes(item) {
     const { product } = item;
     if (!product.attributes || product.attributes.length === 0) return null;
