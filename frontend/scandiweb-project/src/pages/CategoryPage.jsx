@@ -1,4 +1,4 @@
-// CategoryPage.jsx
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from '../utils/withRouter';
@@ -11,7 +11,7 @@ class CategoryPage extends React.Component {
     this.state = {
       products: [],
       showFullDescription: {},
-      isLoading: true, // Added to handle loading state correctly
+      isLoading: true, 
     };
   }
 
