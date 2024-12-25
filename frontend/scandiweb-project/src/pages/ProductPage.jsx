@@ -1,4 +1,4 @@
-// src/pages/ProductPage.jsx
+
 
 import React from 'react';
 import { withRouter } from '../utils/withRouter';
@@ -11,7 +11,7 @@ class ProductPage extends React.Component {
       product: null,
       selectedAttributes: {},
       currentMainImageIndex: 0,
-      isLoading: true, // Reintroduced loading state
+      isLoading: true, 
     };
   }
 
@@ -156,7 +156,7 @@ class ProductPage extends React.Component {
               className="carousel-btn prev"
               onClick={this.handlePrevImage}
               aria-label="Previous Image"
-              data-testid="carousel-prev-button" // Added for QA tests
+              data-testid="carousel-prev-button" 
             >
               &lt;
             </button>
@@ -174,7 +174,7 @@ class ProductPage extends React.Component {
               className="carousel-btn next"
               onClick={this.handleNextImage}
               aria-label="Next Image"
-              data-testid="carousel-next-button" // Added for QA tests
+              data-testid="carousel-next-button" 
             >
               &gt;
             </button>
