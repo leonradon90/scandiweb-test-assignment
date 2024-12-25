@@ -1,4 +1,4 @@
-// Header.jsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import aLogo from '../assets/a-logo.png';
@@ -19,7 +19,7 @@ class Header extends React.Component {
               <Link
                 key={cat.name}
                 to={path}
-                href={path} // Ensures href matches for testing
+                href={path} 
                 data-testid={isActive ? 'active-category-link' : 'category-link'}
                 onClick={() => onCategorySelect(cat.name)}
               >
