@@ -1,0 +1,1 @@
+Full-stack application utilizing GraphQL and PHP on the back-end and built with React and Vite on the front-end. The applications enables users to browse products and create orders and the orders are stored in the database hosted on the server.
