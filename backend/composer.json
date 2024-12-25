@@ -9,5 +9,11 @@
     "vlucas/phpdotenv": "^5.4",
     "webonyx/graphql-php": "^15.0",
     "nikic/fast-route": "^1.3"
+  },
+  "name": "your-username/my-php-app",
+  "description": "A PHP backend for my project",
+  "require": {
+      "php": "^8.0",
+      "ext-mysqli": "*"
   }
 }
