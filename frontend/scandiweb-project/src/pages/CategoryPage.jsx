@@ -1,3 +1,4 @@
+// CategoryPage.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from '../utils/withRouter';
@@ -9,7 +10,8 @@ class CategoryPage extends React.Component {
     super(props);
     this.state = {
       products: [],
-      showFullDescription: {}
+      showFullDescription: {},
+      isLoading: true, // Added to handle loading state correctly
     };
   }
 
@@ -25,14 +27,14 @@ class CategoryPage extends React.Component {
 
   fetchProducts() {
     const { backendUrl } = this.props;
-    const categoryName = this.props.params.name;
+    const categoryName = this.props.params.name.toLowerCase();
     fetch(backendUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query: `
-          query($cat:String!){
-            products(category_name:$cat){
+          query($cat: String!) {
+            products(category_name: $cat) {
               id
               name
               price
@@ -41,20 +43,20 @@ class CategoryPage extends React.Component {
             }
           }
         `,
-        variables: { cat: categoryName }
-      })
+        variables: { cat: categoryName },
+      }),
     })
-      .then(r => r.json())
-      .then(data => {
+      .then((r) => r.json())
+      .then((data) => {
         if (data && data.data && data.data.products) {
-          this.setState({ products: data.data.products });
+          this.setState({ products: data.data.products, isLoading: false });
         } else {
-          this.setState({ products: [] });
+          this.setState({ products: [], isLoading: false });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Fetch error:', err);
-        this.setState({ products: [] });
+        this.setState({ products: [], isLoading: false });
       });
   }
 
@@ -81,8 +83,8 @@ class CategoryPage extends React.Component {
               }
             }
           `,
-          variables: { id: p.id }
-        })
+          variables: { id: p.id },
+        }),
       });
 
       const result = await response.json();
@@ -98,23 +100,20 @@ class CategoryPage extends React.Component {
         return;
       }
 
-
       let attributes = {};
       if (productDetails.attributes) {
-        productDetails.attributes.forEach(attr => {
+        productDetails.attributes.forEach((attr) => {
           if (attr.items && attr.items.length > 0) {
             attributes[attr.name] = attr.items[0].value;
           }
         });
       }
 
-
       const productWithAttrs = {
         ...p,
-        attributes: productDetails.attributes
+        attributes: productDetails.attributes,
       };
 
-     
       addToCart(productWithAttrs, attributes);
     } catch (error) {
       console.error('Error in handleQuickShop:', error);
@@ -123,16 +122,28 @@ class CategoryPage extends React.Component {
   }
 
   render() {
-    const { products } = this.state;
+    const { products, isLoading } = this.state;
+    const { params } = this.props;
+
+    if (isLoading) {
+      return (
+        <div className="loader">
+          <div className="spinner"></div>
+        </div>
+      );
+    }
+
     if (!Array.isArray(products)) {
       return <div>Loading products...</div>;
     }
 
     return (
       <div className="category-page-container">
-        <h2 className="selected-category">{this.props.params.name}</h2>
+        <h2 className="selected-category" data-testid="category-title">
+          {params.name}
+        </h2>
         <div className="category-page">
-          {products.map(p => {
+          {products.map((p) => {
             if (!p || !p.name) return null;
             const testId = `product-${p.name.toLowerCase().replace(/\s+/g, '-')}`;
             return (
@@ -143,7 +154,9 @@ class CategoryPage extends React.Component {
               >
                 <Link
                   to={`/product/${p.id}`}
+                  href={`/product/${p.id}`} // Ensures href matches for testing
                   style={{ textDecoration: 'none', color: 'inherit' }}
+                  data-testid={`product-link-${p.id}`}
                 >
                   <div className="image-container">
                     <img
@@ -151,11 +164,19 @@ class CategoryPage extends React.Component {
                       alt={p.name}
                       className={`product-image ${!p.inStock ? 'out-of-stock-image' : ''}`}
                       loading="lazy"
+                      data-testid={`product-image-${p.id}`}
                     />
-                    {!p.inStock && <div className="out-of-stock">OUT OF STOCK</div>}
+                    {!p.inStock && (
+                      <div
+                        className="out-of-stock"
+                        data-testid={`out-of-stock-${p.id}`}
+                      >
+                        OUT OF STOCK
+                      </div>
+                    )}
                     {p.inStock && (
                       <button
-                        onClick={e => {
+                        onClick={(e) => {
                           e.preventDefault();
                           this.handleQuickShop(p);
                         }}
@@ -167,10 +188,16 @@ class CategoryPage extends React.Component {
                       </button>
                     )}
                   </div>
-                  <div className={`product-name${!p.inStock ? ' out-of-stock-text' : ''}`}>
+                  <div
+                    className={`product-name${!p.inStock ? ' out-of-stock-text' : ''}`}
+                    data-testid={`product-name-${p.id}`}
+                  >
                     {p.name}
                   </div>
-                  <div className={`price${!p.inStock ? ' out-of-stock-text' : ''}`}>
+                  <div
+                    className={`price${!p.inStock ? ' out-of-stock-text' : ''}`}
+                    data-testid={`product-price-${p.id}`}
+                  >
                     ${p.price.toFixed(2)}
                   </div>
                 </Link>
@@ -187,8 +214,8 @@ CategoryPage.propTypes = {
   backendUrl: PropTypes.string.isRequired,
   addToCart: PropTypes.func.isRequired,
   params: PropTypes.shape({
-    name: PropTypes.string.isRequired
-  }).isRequired
+    name: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default withRouter(CategoryPage);
